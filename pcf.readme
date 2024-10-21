@@ -1,0 +1,35 @@
+
+https://dev.to/stevewoodard/unlocking-new-possibilities-transitioning-from-vmware-pivotal-container-service-pks-to-aws-eks-34gn
+
+Project Overview: PCF to EKS Migration
+PCF (Pivotal Cloud Foundry) is a cloud-native platform that simplifies the deployment and management of applications across various infrastructures. EKS (Elastic Kubernetes Service), on the other hand, is a managed Kubernetes service provided by AWS, offering more flexibility and control over container orchestration.
+
+The PCF to EKS migration is a strategic move for organizations that want to gain more control, scalability, and cost-effectiveness in running containerized applications. The migration involves moving applications from a PaaS (Platform-as-a-Service) model provided by PCF to a Kubernetes-based infrastructure in AWS using EKS.
+
+Migration Goals
+Improved Flexibility: While PCF abstracts away many operational concerns, it can also limit flexibility. EKS offers greater control over Kubernetes resources, networking, and integrations.
+
+Cost Optimization: Running workloads on EKS, combined with AWS pricing models (like savings plans), can provide cost savings compared to a fully managed PCF environment.
+
+Vendor Lock-in Avoidance: Migrating to EKS helps reduce dependency on PCF as a platform, giving teams more freedom to work in a cloud-agnostic way through Kubernetes standards.
+
+Enhanced DevOps Capabilities: Kubernetes, being open-source, integrates easily with a wide variety of CI/CD pipelines and monitoring solutions, empowering DevOps teams with more tools and configurations.
+
+Project Objectives
+Seamless Migration: Ensure that applications running on PCF are successfully migrated to EKS with minimal disruption to services.
+
+Application Refactoring: Some applications may need refactoring to align with Kubernetes architecture (e.g., using Kubernetes pods, services, config maps, etc.).
+
+Security & Compliance: Maintain security standards and compliance (data residency, encryption, etc.) throughout the migration process and in the EKS environment.
+
+Operational Efficiency: Streamline DevOps workflows by utilizing EKS’s capabilities for deployment automation, scaling, monitoring, and incident management.
+
+Scalability: Leverage Kubernetes’ auto-scaling features to automatically adjust application resources based on demand.
+
+Monitoring & Logging Integration: Ensure seamless integration of monitoring, logging, and alerting solutions post-migration.
+
+Cost Management: Implement monitoring and management tools to optimize costs during and after the migration.
+
+Disaster Recovery: Set up disaster recovery mechanisms and backups in the new EKS environment.
+
+Would you like more details on the steps involved in the migration?
