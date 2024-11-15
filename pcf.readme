@@ -1,3 +1,86 @@
+Tomcat 9 introduced the **HealthCheckValve**, a configurable valve that performs health checks on the server and provides the status of its components. It is a lightweight, built-in mechanism to ensure the server's health.
+
+---
+
+### **Key Features of HealthCheckValve**
+1. **Lightweight Monitoring**: Designed to provide a simple health-check mechanism without requiring complex setup.
+2. **Configurable Responses**: Supports returning status responses based on server health.
+3. **Integration with Load Balancers**: Ideal for use in cloud and distributed environments where load balancers need periodic health checks.
+4. **HTTP Response Codes**:
+   - **200 (OK)**: Server is healthy.
+   - **500 (Internal Server Error)**: Server is unhealthy.
+
+---
+
+### **Enabling HealthCheckValve**
+
+To use the **HealthCheckValve**, configure it in the `server.xml` file.
+
+#### Example Configuration:
+```xml
+<Valve className="org.apache.catalina.valves.HealthCheckValve"
+       checkInterval="5000"
+       maxMemory="90"
+       maxNonHeapMemory="90"
+       maxThreadsBusy="80"
+       maxGarbageCollectionTime="2000"/>
+```
+
+#### Explanation of Attributes:
+- **`checkInterval`**: Interval (in milliseconds) between health checks (default: `3000`).
+- **`maxMemory`**: Maximum percentage of heap memory usage before marking the server unhealthy.
+- **`maxNonHeapMemory`**: Maximum percentage of non-heap memory usage before marking the server unhealthy.
+- **`maxThreadsBusy`**: Maximum percentage of busy threads before marking the server unhealthy.
+- **`maxGarbageCollectionTime`**: Maximum garbage collection time (in milliseconds) before marking the server unhealthy.
+
+---
+
+### **Accessing the Health Check**
+
+Once enabled, the **HealthCheckValve** responds to requests at the context path you specify. For example:
+```shell
+curl -I http://<your-tomcat-server>:<port>/health
+```
+
+### **Response Example**
+- If healthy:
+  ```http
+  HTTP/1.1 200 OK
+  Content-Length: 0
+  ```
+- If unhealthy:
+  ```http
+  HTTP/1.1 500 Internal Server Error
+  Content-Length: 0
+  ```
+
+---
+
+### **Advanced Usage**
+
+1. **Integration with Load Balancers**:
+   - Configure your load balancer to probe the health check endpoint periodically to determine if the Tomcat server is healthy.
+
+2. **Customizing Thresholds**:
+   - Modify the `maxMemory`, `maxThreadsBusy`, or other attributes to align with your application's needs.
+
+3. **Extending Health Checks**:
+   - You can subclass the `HealthCheckValve` and override its methods to add custom health-check logic.
+
+---
+
+### **Logs and Troubleshooting**
+The HealthCheckValve writes log entries to the standard Tomcat logs (`catalina.out` or equivalent) for debugging. Check these logs if the server is marked unhealthy unexpectedly.
+
+Would you like help setting this up or tuning it for specific requirements?
+
+
+==============
+
+
+
+
+
 Move2Kube is a tool that helps in migrating applications from non-containerized or legacy environments to Kubernetes or cloud-native ecosystems. Here’s a summary of key success criteria for a Move2Kube migration:
 
 Accurate Kubernetes Configuration: The migration results in accurate and optimized Kubernetes resources (e.g., YAML files for deployments, services, ingress) that match the application's requirements.
