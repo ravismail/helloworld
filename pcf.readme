@@ -1,3 +1,29 @@
+Move2Kube is a tool that helps in migrating applications from non-containerized or legacy environments to Kubernetes or cloud-native ecosystems. Here’s a summary of key success criteria for a Move2Kube migration:
+
+Accurate Kubernetes Configuration: The migration results in accurate and optimized Kubernetes resources (e.g., YAML files for deployments, services, ingress) that match the application's requirements.
+
+Efficient Workload Migration: Legacy applications are successfully containerized with compatible Docker images and dependencies for Kubernetes.
+
+Automation and Repeatability: The migration process is automated and repeatable, making it easy to apply to similar workloads or repeat across environments.
+
+Minimal Post-migration Modifications: Few or no additional modifications are needed after migration, and configurations are compatible with the new environment without extensive adjustments.
+
+Testing and Validation: Applications pass functional, performance, and security tests post-migration, ensuring they work as expected in Kubernetes.
+
+Scalability and Performance: The migrated workloads perform efficiently on Kubernetes and are scalable, leveraging Kubernetes' autoscaling and resource management.
+
+Documentation and Maintenance: Clear documentation is generated, detailing the migration steps, Kubernetes configuration, and any customizations needed for maintenance.
+
+Resource Optimization: Efficient resource allocation, with optimized use of CPU, memory, and storage, ensuring that applications run cost-effectively on Kubernetes.
+
+
+
+
+
+
+
+
+---
 
 https://dev.to/stevewoodard/unlocking-new-possibilities-transitioning-from-vmware-pivotal-container-service-pks-to-aws-eks-34gn
 
