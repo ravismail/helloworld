@@ -1,3 +1,85 @@
+### **Startup Probes in Kubernetes**
+
+A **Startup Probe** in Kubernetes is a mechanism used to determine if an application within a container has successfully started. It is particularly useful for applications that require a significant amount of time to initialize, preventing the container from being prematurely restarted by other probes.
+
+#### **Why Use Startup Probes?**
+- **Slow initialization**: Some applications have extensive startup routines, such as loading large datasets, initializing caches, or establishing connections to external services.
+- **Avoid premature restarts**: Without startup probes, Kubernetes may mistakenly think the application has failed and restart the container before it has had a chance to initialize.
+- **Better control over readiness**: It delays the execution of readiness and liveness probes until the startup probe succeeds.
+
+---
+
+#### **How Startup Probes Work**
+- **Behavior**: 
+  - Kubernetes uses the startup probe to check if the application is ready to start executing. 
+  - If the startup probe succeeds, the regular **liveness** and **readiness probes** take over.
+  - If the startup probe fails, Kubernetes restarts the container according to its restart policy.
+  
+- **Execution**: 
+  - Similar to other probes, startup probes support three types of checks:
+    1. **HTTP**: Makes an HTTP request to a specified endpoint.
+    2. **TCP Socket**: Tries to establish a TCP connection.
+    3. **Command**: Executes a command inside the container.
+
+---
+
+#### **Configuration Example**
+
+```yaml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: example-app
+spec:
+  containers:
+  - name: my-app
+    image: my-app-image
+    startupProbe:
+      httpGet:
+        path: /healthz
+        port: 8080
+      initialDelaySeconds: 30
+      periodSeconds: 10
+      failureThreshold: 20
+    readinessProbe:
+      httpGet:
+        path: /ready
+        port: 8080
+      initialDelaySeconds: 5
+      periodSeconds: 10
+    livenessProbe:
+      httpGet:
+        path: /live
+        port: 8080
+      initialDelaySeconds: 60
+      periodSeconds: 10
+```
+
+**Key Parameters**:
+1. **`httpGet`/`tcpSocket`/`exec`**: Specifies the type of check to perform.
+2. **`initialDelaySeconds`**: The delay before the probe starts. Use this to account for expected initialization time.
+3. **`periodSeconds`**: The frequency of probe execution.
+4. **`failureThreshold`**: The number of consecutive failures before the container is considered failed.
+
+---
+
+#### **Best Practices**
+1. **Estimate startup time carefully**: Ensure `failureThreshold` and `periodSeconds` are sufficient to account for the worst-case initialization time.
+2. **Keep probes lightweight**: Avoid resource-intensive checks in startup probes.
+3. **Combine with readiness and liveness probes**: Startup probes should work in conjunction with other probes for comprehensive application health monitoring.
+
+---
+
+#### **Benefits of Startup Probes**
+- Reduces unnecessary container restarts during initialization.
+- Provides flexibility for applications with complex or long startup processes.
+- Improves system stability and application availability.
+
+By configuring startup probes effectively, you ensure smoother deployment and operation of applications within Kubernetes environments.
+
+
+
+
 Tomcat 9 introduced the **HealthCheckValve**, a configurable valve that performs health checks on the server and provides the status of its components. It is a lightweight, built-in mechanism to ensure the server's health.
 
 ---
