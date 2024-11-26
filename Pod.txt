@@ -1,0 +1,20 @@
+
+https://www.techopsexamples.com/p/pod-yaml-file-structure-breakdown
+pod.yaml probes section sample
+
+Why they’re crucial:
+Without probes, Kubernetes might assume a pod is healthy and route traffic to it even when it’s not ready, leading to downtime or errors.
+
+Pro Tip: Define probes tailored to your application endpoints, and test their configurations in staging before deploying to production.
+
+Affinity
+Node and pod affinity control where your pods are scheduled, improving resource utilization and workload performance.
+
+
+pod.yaml affinity section sample
+
+Hard rules: requiredDuringSchedulingIgnoredDuringExecution enforces pod placement on specific nodes (e.g., zone=us-west-1a).
+
+Soft preferences: preferredDuringSchedulingIgnoredDuringExecution prioritizes placement but doesn’t enforce it strictly.
+
+Use it for workloads that benefit from proximity, such as a frontend service colocating with its backend.
