@@ -1,0 +1,30 @@
+Move2Kube is an open-source tool developed by IBM Research to streamline the process of migrating applications to Kubernetes and cloud-native environments. It simplifies the otherwise complex and time-consuming task of modernizing legacy applications or moving them from traditional setups to Kubernetes-based ecosystems. Move2Kube enables users to analyze their existing workloads and infrastructure, generate Kubernetes configurations, and automate containerization.
+
+### Key Features:
+1. **Application Analysis**:
+   - Analyzes source platforms (e.g., virtual machines, Cloud Foundry, Docker Compose) to understand application requirements.
+   - Supports input formats like Docker Compose, CF manifests, and Helm charts.
+
+2. **Transformation and Containerization**:
+   - Converts application configurations into Kubernetes-native formats such as Deployment YAMLs, Helm charts, or Kustomize.
+   - Automates the containerization of applications, including building Dockerfiles and container images.
+
+3. **Customizable Outputs**:
+   - Provides a high degree of configurability to meet specific enterprise needs.
+   - Supports customization of Kubernetes resources to align with organizational policies and best practices.
+
+4. **Cloud-Agnostic Migration**:
+   - Works across multiple Kubernetes distributions and cloud platforms (AWS, Azure, Google Cloud, etc.).
+   - Generates outputs tailored to specific platforms when needed.
+
+5. **Ease of Use**:
+   - CLI-based interface for quick transformations.
+   - Designed to reduce manual effort and accelerate migration timelines.
+
+### Benefits of Using Move2Kube:
+- **Time Efficiency**: Reduces the time required to migrate and modernize applications.
+- **Consistency**: Ensures consistent configuration generation, reducing errors and improving reliability.
+- **Scalability**: Supports a range of applications, from small-scale to enterprise-grade systems.
+- **Cost Savings**: Minimizes the need for extensive manual intervention and external consulting.
+
+Move2Kube is particularly beneficial for organizations transitioning to Kubernetes, helping bridge the gap between legacy systems and modern cloud-native platforms. It is available on GitHub, making it accessible for developers and organizations worldwide to customize and integrate into their migration workflows.
