@@ -1,0 +1,95 @@
+Displaying environment variables in an `index.html` file served by Apache Tomcat requires a server-side mechanism since HTML itself is static and cannot access server-side environment variables. Here are steps to achieve this:
+
+### 1. **Use a Servlet to Expose Environment Variables**
+   Create a servlet that reads environment variables and exposes them via an endpoint.
+
+#### Example Code:
+- **`EnvServlet.java`**
+```java
+import java.io.IOException;
+import java.util.Map;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+@WebServlet("/env")
+public class EnvServlet extends HttpServlet {
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+
+        Map<String, String> env = System.getenv();
+        StringBuilder json = new StringBuilder("{");
+        for (Map.Entry<String, String> entry : env.entrySet()) {
+            json.append("\"").append(entry.getKey()).append("\":\"").append(entry.getValue()).append("\",");
+        }
+        if (json.length() > 1) json.setLength(json.length() - 1); // Remove trailing comma
+        json.append("}");
+
+        response.getWriter().write(json.toString());
+    }
+}
+```
+
+- **Steps to Deploy Servlet:**
+   1. Place the compiled `EnvServlet.class` file in the `WEB-INF/classes` directory or include it in a WAR file.
+   2. Update the `web.xml` if you're not using annotations:
+      ```xml
+      <servlet>
+          <servlet-name>EnvServlet</servlet-name>
+          <servlet-class>EnvServlet</servlet-class>
+      </servlet>
+      <servlet-mapping>
+          <servlet-name>EnvServlet</servlet-name>
+          <url-pattern>/env</url-pattern>
+      </servlet-mapping>
+      ```
+
+### 2. **Call the Servlet from `index.html`**
+   Update your `index.html` file to fetch and display the environment variables.
+
+#### Example Code:
+- **`index.html`**
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Environment Variables</title>
+</head>
+<body>
+    <h1>Environment Variables</h1>
+    <pre id="env"></pre>
+
+    <script>
+        fetch('/env')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('env').textContent = JSON.stringify(data, null, 2);
+            })
+            .catch(error => {
+                console.error('Error fetching environment variables:', error);
+                document.getElementById('env').textContent = 'Failed to fetch environment variables.';
+            });
+    </script>
+</body>
+</html>
+```
+
+### 3. **Deploy to Tomcat**
+   - Package your application as a WAR file (if needed) and deploy it to Tomcat's `webapps` directory.
+   - Start Tomcat and navigate to `http://<hostname>:<port>/index.html` to view the environment variables.
+
+### **Security Notes**
+- Exposing environment variables publicly may lead to security risks. Avoid exposing sensitive variables (e.g., API keys, passwords).
+- Use filtering mechanisms to limit what is exposed. For example, modify the servlet to only include specific variables:
+   ```java
+   if (entry.getKey().startsWith("MY_APP_")) {
+       // Only include variables that start with "MY_APP_"
+   }
+   ```
