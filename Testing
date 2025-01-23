@@ -1,0 +1,53 @@
+Here’s an example of **acceptance criteria** for a **Container Operations Engineer** in a Jira ticket. This can vary depending on the specific task or project, but here’s a generic template:
+
+---
+
+**Story Title:**  
+Deploy a New Kubernetes Cluster on EKS for Development Environment
+
+---
+
+### **Acceptance Criteria:**
+
+1. **Cluster Deployment:**  
+   - A new EKS cluster is deployed successfully with the following specifications:  
+     - Region: `us-east-1`  
+     - Node type: `t3.medium`  
+     - Minimum nodes: 2  
+     - Maximum nodes: 5  
+     - Kubernetes version: `1.27`
+
+2. **Networking Configuration:**  
+   - The cluster uses a private VPC with properly configured subnets and route tables.  
+   - Security groups are configured to allow communication between nodes and load balancers.  
+   - Cluster is integrated with existing service discovery mechanisms (e.g., Route 53).
+
+3. **Access Control:**  
+   - Role-based access control (RBAC) is configured to restrict cluster admin access to authorized users.  
+   - IAM roles are correctly associated with the EKS cluster for node group management.
+
+4. **Observability:**  
+   - Cluster monitoring is set up using Prometheus and Grafana.  
+   - Logs are shipped to a central logging solution (e.g., CloudWatch).  
+
+5. **Container Workload Deployment:**  
+   - A test workload (e.g., Nginx) is deployed and verified to run successfully in the cluster.  
+   - The workload is exposed via an Ingress controller with proper annotations for external access.  
+
+6. **Documentation:**  
+   - Steps for deploying the cluster are documented in the team's Confluence space.  
+   - Any custom configurations or caveats are highlighted.  
+
+7. **Validation:**  
+   - All steps pass a peer review process.  
+   - Cluster health and performance are verified using standard testing tools.
+
+---
+
+**Definition of Done:**  
+- The cluster is operational, meets the acceptance criteria, and is handed over to the application team for further testing.  
+- No critical or high-severity issues remain unresolved.
+
+--- 
+
+This format ensures clarity and measurable deliverables for both the assignee and stakeholders. Let me know if you'd like to tailor it further for a specific scenario.
