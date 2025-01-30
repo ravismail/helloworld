@@ -1,3 +1,67 @@
+apiVersion: move2kube.konveyor.io/v1alpha1
+kind: Plan
+metadata:
+  name: myproject
+spec:
+  sourceDir: hello-spring-cloud-master
+  services:
+    hello-spring-cloud:
+      - transformerName: CloudFoundry
+        paths:
+          BuildArtifact:
+            - target/hello-spring-cloud-0.0.1.BUILD-SNAPSHOT.jar
+          CfManifest:
+            - manifest.yml
+          ServiceDirectories:
+            - .
+        configs:
+          CloudFoundryService:
+            serviceName: hello-spring-cloud
+          ContainerizationOptions:
+            - Maven
+      - transformerName: Maven
+        paths:
+          ServiceDirectories:
+            - .
+          ServiceRootDirectory:
+            - .
+          pomFiles:
+            - pom.xml
+        configs:
+          Maven:
+            mavenAppName: hello-spring-cloud
+            packagingType: jar
+            isMvnwPresent: false
+            childModules:
+              - name: hello-spring-cloud
+                pomPath: pom.xml
+  transformers:
+#    Buildconfig: m2kassets/built-in/transformers/kubernetes/buildconfig/transformer.yaml
+    CloudFoundry: m2kassets/built-in/transformers/cloudfoundry/transformer.yaml
+    ClusterSelector: m2kassets/built-in/transformers/kubernetes/clusterselector/transformer.yaml
+#    ComposeAnalyser: m2kassets/built-in/transformers/compose/composeanalyser/transformer.yaml
+#    ComposeGenerator: m2kassets/built-in/transformers/compose/composegenerator/transformer.yaml
+#    ContainerImagesPushScriptGenerator: m2kassets/built-in/transformers/containerimagespushscript/transformer.yaml
+    DockerfileDetector: m2kassets/built-in/transformers/dockerfile/dockerfiledetector/transformer.yaml
+    DockerfileImageBuildScript: m2kassets/built-in/transformers/dockerfile/dockerimagebuildscript/transformer.yaml
+    DockerfileParser: m2kassets/built-in/transformers/dockerfile/dockerfileparser/transformer.yaml
+#    DotNetCore-Dockerfile: m2kassets/built-in/transformers/dockerfilegenerator/dotnetcore/transformer.yaml
+    Gradle: m2kassets/built-in/transformers/dockerfilegenerator/java/gradle/transformer.yaml
+    Jar: m2kassets/built-in/transformers/dockerfilegenerator/java/jar/transformer.yaml
+    Kubernetes: m2kassets/built-in/transformers/kubernetes/kubernetes/transformer.yaml
+    Maven: m2kassets/built-in/transformers/dockerfilegenerator/java/maven/transformer.yaml
+    Nodejs-Dockerfile: m2kassets/built-in/transformers/dockerfilegenerator/nodejs/transformer.yaml
+#    OperatorTransformer: m2kassets/built-in/transformers/kubernetes/operator/transformer.yaml
+    Parameterizer: m2kassets/built-in/transformers/kubernetes/parameterizer/transformer.yaml
+    Python-Dockerfile: m2kassets/built-in/transformers/dockerfilegenerator/python/transformer.yaml
+  disabledTransformers:
+    WinConsoleApp-Dockerfile: m2kassets/built-in/transformers/dockerfilegenerator/windows/winconsole/transformer.yaml
+    WinSLWebApp-Dockerfile: m2kassets/built-in/transformers/dockerfilegenerator/windows/winsilverlightweb/transformer.yaml
+
+
+
+
+
 Move2Kube is an open-source tool developed by IBM Research to streamline the process of migrating applications to Kubernetes and cloud-native environments. It simplifies the otherwise complex and time-consuming task of modernizing legacy applications or moving them from traditional setups to Kubernetes-based ecosystems. Move2Kube enables users to analyze their existing workloads and infrastructure, generate Kubernetes configurations, and automate containerization.
 
 ### Key Features:
