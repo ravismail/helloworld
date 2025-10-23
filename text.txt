@@ -177,3 +177,66 @@ Would you like help designing this presentation, adding more specific technical 
 
 
 
+Summary
+MQ Configuration Issues
+- Successfully built Docker image with JAR file and deployed to cluster
+- MQ connection configured for local VM deployment only
+   - Current setup uses localhost connections without explicit host/port
+   - Queue manager configured through profiles (dev, QA, prod)
+   - Connection factory only specifies queue manager name, defaults to localhost
+- Required changes for Kubernetes deployment:
+   - Need to set host and port in MQ connection factory
+   - Must use client connection method instead of local binding
+   - Code changes required in connection factory setup
+   - Cannot be solved through config file changes alone
+Kubernetes Service Communication
+- MQ running in different namespace with external IP and port 1401
+- Inter-namespace communication requires FQDN format:
+   - servicename.namespace.svc.cluster.local:port
+   - Example: qmanager.pcf.svc.cluster.local:1401
+- Environment variables approach planned:
+   - MQ_HOST and MQ_PORT through Helm values.yaml
+   - Parameterization through deployment.yaml
+   - Values passed to application.properties
+Application Architecture Details
+- Service consumes from MQ queues and sends to other queues
+- Multiple services need similar MQ connectivity changes
+- Spring Boot application with active profiles
+- Current VM setup has 6 servers with one service instance each
+- Moving toward client-server architecture with single queue manager
+Container Deployment Strategy
+- Using JRE 17 with Tomcat 9.0.90
+- Docker file copies WAR to /app/data directory
+- Profile configuration through command line arguments
+- Plan to add Docker files to existing repository with git ignore
+- Maintain single codebase for both VM and container deployment options
+Service Integration Requirements
+- Two REST services identified: key code and client param router
+- Services communicate via REST endpoints configured in profiles
+- Current URLs point to VM hosts, need service name conversion
+- Within-cluster communication will use service names instead of external URLs
+- New Kubernetes profile needed for testing
+File Management and Access
+- WAR files (~500MB each) shared through SharePoint
+- Repository access requested for Helm charts and Docker files
+- Multiple profile configurations: Oracle common, QA profiles
+- Genesis client param loader and key code services ready for deployment
+Next Steps and Dependencies
+- MQ team coordination needed for MQSC and INI files
+- Fresh MQ deployment setup required for application
+- Queue manager, channel configurations need adjustment
+- Alias queues and cluster configurations to be replicated
+- Multiple queue manager interconnections to be established
+Action Items
+- Coordinate with MQ team (Murli, Suresh, Amulya) to obtain MQSC and INI files for Kubernetes MQ setup
+- Modify WAR file code to accept MQ host and port from environment variables
+- Create new Kubernetes profile for testing separate from existing QA profile
+- Configure Helm charts with MQ_HOST and MQ_PORT parameters in values.yaml
+- Set up fresh MQ deployment in TKG cluster with proper queue manager configurations
+- Update service communication URLs to use Kubernetes service names instead of VM hostnames
+- Deploy and test Genesis client param loader and key code services
+- Test connectivity between current VM MQ and containerized services
+- Add Docker files and Helm charts to existing repository with proper git ignore
+- Share REST API endpoints for testing once services are deployed
+
+
