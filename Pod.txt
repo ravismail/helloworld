@@ -1,4 +1,91 @@
-Building base images offers several advantages, particularly for teams and organizations that manage complex or large-scale containerized environments. Here are the key benefits:
+Perfect — here’s how you can split the original story into **four individual Jira stories**, each with its own **description** and **acceptance criteria** for clarity and tracking.
+
+---
+
+## 🧩 **Story 1: POC Architecture Design**
+
+**Story Title:**
+Design the architecture for POC environment setup
+
+**Description:**
+As a Solution Architect, I want to design the end-to-end POC architecture covering infrastructure, networking, CI/CD, security, and observability components, so that the solution can be validated for scalability, reliability, and operational readiness.
+
+**Acceptance Criteria:**
+
+1. High-level architecture diagram and component mapping are documented.
+2. Includes infrastructure topology, network flow, and security model.
+3. Integration points with CI/CD, monitoring, and logging are defined.
+4. Architecture reviewed and approved by platform and application stakeholders.
+5. Documentation published in the architecture repository.
+
+---
+
+## ⚙️ **Story 2: Infrastructure Setup for POC Cluster**
+
+**Story Title:**
+Provision and configure infrastructure for POC cluster
+
+**Description:**
+As a DevOps Engineer, I want to set up the base infrastructure and Kubernetes clusters required for the POC environment, so that the platform can host and manage applications securely and efficiently.
+
+**Acceptance Criteria:**
+
+1. Kubernetes cluster provisioned in target environment (e.g., EKS/GKE/AKS).
+2. Namespaces, resource quotas, and RBAC policies are configured.
+3. Storage classes, ingress controller, and network policies are set up.
+4. Monitoring and logging stack (e.g., Prometheus, Grafana, ELK) deployed.
+5. Access credentials and kubeconfig shared with authorized users.
+6. Infrastructure setup validated and documented.
+
+---
+
+## 🧱 **Story 3: Helm Chart Preparation for POC Applications**
+
+**Story Title:**
+Develop and validate Helm charts for POC applications
+
+**Description:**
+As a DevOps Engineer, I want to create reusable Helm charts to deploy POC applications, so that deployments are standardized, configurable, and easy to manage across environments.
+
+**Acceptance Criteria:**
+
+1. Common Helm chart templates are created for POC applications.
+2. Values files are parameterized for environment-specific configurations.
+3. Helm charts validated using `helm lint` and test deployments.
+4. Versioning and repository setup completed for chart storage.
+5. Documentation for deployment parameters and structure prepared.
+
+---
+
+## 🚀 **Story 4: Onboard POC Applications to Kubernetes Cluster**
+
+**Story Title:**
+Onboard and deploy POC applications to the POC cluster
+
+**Description:**
+As a Platform Engineer, I want to onboard and deploy identified POC applications to the Kubernetes cluster using Helm charts, so that the setup can be validated for deployment automation and functionality.
+
+**Acceptance Criteria:**
+
+1. Identified POC applications deployed using prepared Helm charts.
+2. Deployments are successful and applications are reachable.
+3. Application logs and metrics are visible through the monitoring stack.
+4. Deployment process validated through CI/CD pipeline.
+5. Documentation for deployment and troubleshooting is available.
+6. Demo conducted to confirm successful onboarding.
+
+---
+
+Would you like me to also add **story points** and **dependencies** (e.g., Story 2 depends on Story 1, etc.) so you can import directly into Jira?
+
+
+
+
+
+
+
+
+.Building base images offers several advantages, particularly for teams and organizations that manage complex or large-scale containerized environments. Here are the key benefits:
 
 ### 1. **Consistency Across Environments**
    - Provides a uniform foundation for all derived images, ensuring applications run consistently across development, testing, and production.
