@@ -1,3 +1,21 @@
+
+Of course. Here is a summary of the first 33 minutes of the architecture review for the Pemiter project, along with the key action items that came out of it.
+Summary of Discussion (10:00 - 10:33 AM)
+The conversation focused entirely on the Pemiter project's Kubernetes architecture. You and Dimitri led a discussion with the application team about a critical design flaw.
+* The Core Problem: You identified that the microservices (UI, Acquirer, Issuer) are incorrectly communicating with each other. Instead of using the internal Kubernetes network, the calls are going out of the cluster to an external ingress URL and then coming back in. You called this a "bad design" because it's inefficient and misses the point of running in a single cluster.
+* Your Demonstration: You proved that internal communication works correctly by logging into a pod and using "curl" to directly call another service using its internal service name and port (e.g., "acquirer:9001"). This showed the team that the underlying network functionality is there.
+* Dimitri's Reinforcement: Dimitri supported your analysis, explaining that the team was using a "virtual machine approach" to networking rather than a proper container orchestration approach. He emphasized that every Kubernetes cluster has a built-in DNS service (CoreDNS) that makes this internal communication simple.
+* Best Practices: Dimitri also outlined several Kubernetes best practices for the team:
+   * Networking: Use service names for internal calls. The full address ("service.namespace.svc.cluster.local") is not needed if the services are in the same namespace.
+   * Configuration: Avoid hardcoding any values. He strongly recommended using ConfigMaps for environment-specific variables to make the application portable across dev, QA, and production without rebuilding the container.
+   * Container Design: He gave a quick overview of building universal containers: use non-root users, minimal base images (JRE, not JDK), and treat filesystems as read-only.
+***
+Action Items for the Application Team
+1. Fix Internal Communication: The team's top priority is to modify the application to use internal Kubernetes service names and ports for all communication between the UI, Acquirer, and Issuer services.
+2. Remove Hardcoded URLs: They must remove all hardcoded external URLs from their application code and configuration that are used for internal service calls.
+3. Research & Test: The team needs to research how to properly implement this, test it in their local environment, and figure out why their previous attempts failed.
+4. Adopt ConfigMaps: Following the immediate fix, the plan is to move all environment configurations into Kubernetes ConfigMaps to enable a true "build once, deploy anywhere" model.
+
 **Blue-Green Deployment Presentation**
 
 **Slide 1: Title Slide**
