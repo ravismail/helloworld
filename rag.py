@@ -1,4 +1,4 @@
-pip install langchain-community langchain-text-splitters langchain-chroma pypdf sentence-transformers
+6pip install langchain-community langchain-text-splitters langchain-chroma pypdf sentence-transformers
 
 
 1:
@@ -209,3 +209,118 @@ for i, doc in enumerate(results, 1):
     print(f"🔢 Chunk ID: {doc.metadata.get('chunk_id', 'N/A')}")
     print("Content:")
     print(doc.page_content[:500], "...")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+import os
+import requests
+from langchain_community.document_loaders import PyPDFLoader
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain.vectorstores import Chroma
+from langchain.embeddings.base import Embeddings
+
+# --------------------------------------------------
+# Custom Embedding Class
+# --------------------------------------------------
+class LocalModelEmbeddings(Embeddings):
+    def __init__(self, base_url: str, model: str):
+        self.base_url = base_url.rstrip("/")
+        self.model = model
+
+    def embed_documents(self, texts):
+        embeddings = []
+        for text in texts:
+            payload = {"prompt": text, "model": self.model}
+            response = requests.post(
+                f"{self.base_url}/embeddings",
+                json=payload,
+                timeout=60
+            )
+            if response.status_code != 200:
+                raise ValueError(f"Embedding failed: {response.text}")
+            data = response.json()
+            embeddings.append(data["data"][0]["embedding"])
+        return embeddings
+
+    def embed_query(self, text):
+        payload = {"prompt": text, "model": self.model}
+        response = requests.post(
+            f"{self.base_url}/embeddings",
+            json=payload,
+            timeout=60
+        )
+        if response.status_code != 200:
+            raise ValueError(f"Embedding failed: {response.text}")
+        return response.json()["data"][0]["embedding"]
+
+# --------------------------------------------------
+# CONFIG
+# --------------------------------------------------
+PDF_PATH = "sample.pdf"
+CHROMA_PERSIST_DIR = "./chroma_db"
+CHROMA_COLLECTION = "pdf_collection"
+
+# Your local model runner endpoint
+BASE_URL = "http://localhost:12434/engines/llama.cpp/v1"
+MODEL = "ai/nomic-embed-text-v1.5"
+
+# --------------------------------------------------
+# STEP 1: Load and chunk PDF
+# --------------------------------------------------
+print("📄 Loading PDF...")
+loader = PyPDFLoader(PDF_PATH)
+documents = loader.load()
+
+for i, doc in enumerate(documents):
+    doc.metadata["source"] = os.path.basename(PDF_PATH)
+    doc.metadata["page_number"] = i + 1
+
+splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=150)
+texts = splitter.split_documents(documents)
+for i, doc in enumerate(texts):
+    doc.metadata["chunk_id"] = i + 1
+
+print(f"✅ Total chunks: {len(texts)}")
+
+# --------------------------------------------------
+# STEP 2: Embed & store in Chroma
+# --------------------------------------------------
+embeddings = LocalModelEmbeddings(base_url=BASE_URL, model=MODEL)
+
+vectorstore = Chroma.from_documents(
+    documents=texts,
+    embedding=embeddings,
+    collection_name=CHROMA_COLLECTION,
+    persist_directory=CHROMA_PERSIST_DIR
+)
+vectorstore.persist()
+print("✅ PDF embedded successfully!")
+
+# --------------------------------------------------
+# STEP 3: Query
+# --------------------------------------------------
+query = "Summarize this document"
+results = vectorstore.similarity_search(query, k=2)
+
+for i, doc in enumerate(results, 1):
+    print(f"\nResult {i}:")
+    print(f"📄 Page {doc.metadata.get('page_number')}, Chunk {doc.metadata.get('chunk_id')}")
+    print(doc.page_content[:400], "...")
