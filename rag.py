@@ -114,3 +114,98 @@ print("\n--- Source Documents ---")
 for doc in result['source_documents']:
     # The source metadata often includes the page number
     print(f"- Source: {doc.metadata.get('source')} (Page: {doc.metadata.get('page')})")
+
+
+
+
+
+
+
+
+import os
+from langchain_community.document_loaders import PyPDFLoader
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain_openai import OpenAIEmbeddings
+from langchain_community.vectorstores import Chroma
+
+# ----------------------------------------------------
+# CONFIGURATION
+# ----------------------------------------------------
+PDF_PATH = "sample.pdf"  # path to your PDF
+CHROMA_HOST = "http://localhost:8000"  # ChromaDB in Docker
+MODEL_RUNNER_URL = "http://localhost:12434/engines/llama.cpp/v1"  # embedding model runner
+COLLECTION_NAME = "pdf_collection"
+
+# ----------------------------------------------------
+# STEP 1: Load PDF
+# ----------------------------------------------------
+print("📄 Loading PDF document...")
+loader = PyPDFLoader(PDF_PATH)
+documents = loader.load()
+
+# ----------------------------------------------------
+# STEP 2: Add metadata for traceability
+# ----------------------------------------------------
+print("🧾 Adding metadata to documents...")
+for i, doc in enumerate(documents):
+    doc.metadata["source"] = os.path.basename(PDF_PATH)
+    doc.metadata["page_number"] = i + 1
+
+# ----------------------------------------------------
+# STEP 3: Split text into manageable chunks
+# ----------------------------------------------------
+print("✂️ Splitting document into chunks...")
+text_splitter = RecursiveCharacterTextSplitter(
+    chunk_size=1000,
+    chunk_overlap=150,
+    length_function=len
+)
+texts = text_splitter.split_documents(documents)
+
+# Add unique IDs or chunk numbers
+for i, doc in enumerate(texts):
+    doc.metadata["chunk_id"] = i + 1
+
+print(f"✅ Total chunks created: {len(texts)}")
+
+# ----------------------------------------------------
+# STEP 4: Initialize embeddings from Docker model runner
+# ----------------------------------------------------
+print("🧠 Initializing embedding model...")
+embeddings = OpenAIEmbeddings(
+    model="ai/nomic-embed-text-v1.5:latest",
+    openai_api_key="none",  # local runner doesn’t need auth
+    openai_api_base=MODEL_RUNNER_URL
+)
+
+# ----------------------------------------------------
+# STEP 5: Connect to ChromaDB running on Docker
+# ----------------------------------------------------
+print("🗄️ Connecting to ChromaDB Docker service...")
+vectorstore = Chroma.from_documents(
+    documents=texts,
+    embedding=embeddings,
+    collection_name=COLLECTION_NAME,
+    client_settings={
+        "chroma_api_impl": "rest",
+        "chroma_server_host": "localhost",
+        "chroma_server_http_port": "8000",
+    }
+)
+
+print("✅ Successfully embedded PDF and stored in ChromaDB with metadata!")
+
+# ----------------------------------------------------
+# STEP 6: Example semantic search
+# ----------------------------------------------------
+query = "Summarize the key topic discussed in this PDF."
+print(f"\n🔍 Running similarity search for: '{query}'")
+results = vectorstore.similarity_search(query, k=2)
+
+for i, doc in enumerate(results, 1):
+    print(f"\nResult {i}:")
+    print(f"📄 Source: {doc.metadata.get('source', 'N/A')}")
+    print(f"📄 Page: {doc.metadata.get('page_number', 'N/A')}")
+    print(f"🔢 Chunk ID: {doc.metadata.get('chunk_id', 'N/A')}")
+    print("Content:")
+    print(doc.page_content[:500], "...")
