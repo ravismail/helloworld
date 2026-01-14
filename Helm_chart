@@ -694,3 +694,617 @@ If you want, I can:
 * Convert this into **company-standard README**
 
 Just say the word 🚀
+========================================================================================
+
+Got it 👍 — **ONLY a `README.md` that documents `values.yaml`**, nothing else.
+Below is a **minimal, clean, and team-friendly README** you can drop next to `values.yaml`.
+
+---
+
+# values.yaml – Configuration Reference
+
+This file contains **all configurable values** for deploying a Spring Boot application using the reusable Helm chart on Amazon EKS.
+
+**Do not modify Helm templates.**
+Update only this file (or environment-specific overrides like `values-dev.yaml`, `values-prod.yaml`) per application.
+
+---
+
+## replicaCount
+
+Number of pod replicas to run.
+
+```yaml
+replicaCount: 2
+```
+
+---
+
+## image
+
+Container image configuration.
+
+```yaml
+image:
+  repository: <ecr-repository>
+  tag: <image-tag>
+  pullPolicy: IfNotPresent
+```
+
+| Field      | Description                                  |
+| ---------- | -------------------------------------------- |
+| repository | Container image repository (ECR recommended) |
+| tag        | Image tag/version                            |
+| pullPolicy | Kubernetes image pull policy                 |
+
+---
+
+## imagePullSecrets (optional)
+
+Used for private container registries.
+
+```yaml
+imagePullSecrets:
+  - name: regcred
+```
+
+---
+
+## nameOverride / fullnameOverride (optional)
+
+Override default Helm-generated names.
+
+```yaml
+nameOverride: ""
+fullnameOverride: ""
+```
+
+---
+
+## serviceAccount
+
+Kubernetes ServiceAccount configuration (IRSA supported).
+
+```yaml
+serviceAccount:
+  create: true
+  name: ""
+  annotations: {}
+```
+
+Example with IRSA:
+
+```yaml
+annotations:
+  eks.amazonaws.com/role-arn: arn:aws:iam::<account-id>:role/<iam-role>
+```
+
+---
+
+## podAnnotations
+
+Annotations applied to pods.
+
+```yaml
+podAnnotations: {}
+```
+
+Example:
+
+```yaml
+podAnnotations:
+  prometheus.io/scrape: "true"
+```
+
+---
+
+## podLabels
+
+Custom labels added to pods.
+
+```yaml
+podLabels: {}
+```
+
+---
+
+## service
+
+Kubernetes Service configuration.
+
+```yaml
+service:
+  type: ClusterIP
+  port: 8080
+```
+
+---
+
+## containerPort
+
+Port exposed by the Spring Boot container.
+
+```yaml
+containerPort: 8080
+```
+
+---
+
+## env
+
+Environment variables passed to the container.
+
+```yaml
+env:
+  SPRING_PROFILES_ACTIVE: dev
+  JAVA_OPTS: "-Xms512m -Xmx1024m"
+```
+
+---
+
+## config
+
+ConfigMap-based application configuration mounted at `/config`.
+
+```yaml
+config:
+  enabled: true
+  data:
+    application.yaml: |
+      server:
+        port: 8080
+```
+
+Spring Boot automatically loads configuration from `/config`.
+
+---
+
+## secret (optional)
+
+Kubernetes Secret for sensitive values.
+
+```yaml
+secret:
+  enabled: false
+  data: {}
+```
+
+Example:
+
+```yaml
+data:
+  DB_USERNAME: user
+  DB_PASSWORD: password
+```
+
+⚠️ Do not commit real secrets to Git.
+
+---
+
+## livenessProbe
+
+Liveness probe configuration (Spring Boot actuator).
+
+```yaml
+livenessProbe:
+  path: /actuator/health/liveness
+  initialDelaySeconds: 60
+  periodSeconds: 10
+```
+
+---
+
+## readinessProbe
+
+Readiness probe configuration.
+
+```yaml
+readinessProbe:
+  path: /actuator/health/readiness
+  initialDelaySeconds: 30
+  periodSeconds: 10
+```
+
+---
+
+## resources
+
+CPU and memory requests and limits.
+
+```yaml
+resources:
+  requests:
+    cpu: "250m"
+    memory: "512Mi"
+  limits:
+    cpu: "500m"
+    memory: "1Gi"
+```
+
+---
+
+## autoscaling (HPA)
+
+Horizontal Pod Autoscaler configuration.
+
+```yaml
+autoscaling:
+  enabled: false
+  minReplicas: 2
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 70
+```
+
+---
+
+## ingress
+
+Ingress configuration (ALB / NGINX supported).
+
+```yaml
+ingress:
+  enabled: false
+  className: alb
+  annotations: {}
+  hosts:
+    - host: app.example.com
+      paths:
+        - path: /
+          pathType: Prefix
+  tls: []
+```
+
+---
+
+## nodeSelector
+
+Node selection constraints.
+
+```yaml
+nodeSelector: {}
+```
+
+---
+
+## tolerations
+
+Tolerations for tainted nodes.
+
+```yaml
+tolerations: []
+```
+
+---
+
+## affinity
+
+Pod scheduling rules.
+
+```yaml
+affinity: {}
+```
+
+---
+
+## Environment Overrides
+
+Use environment-specific override files instead of modifying this file directly.
+
+```bash
+values-dev.yaml
+values-qa.yaml
+values-prod.yaml
+```
+
+Deploy example:
+
+```bash
+helm install my-app springboot-helm -f values-prod.yaml
+```
+
+---
+
+## Ownership
+
+This `values.yaml` file is **application-owned**.
+Helm templates are **platform-owned**.
+
+---
+
+If you want, I can also:
+
+* Trim this further to a **one-page README**
+* Add **inline comments version** of `values.yaml`
+* Generate **sample values-dev / prod files**
+
+Just tell me.
+
+
+
+========================================================================================
+
+Perfect 👍 — below are **both deliverables**, trimmed, clean, and ready to drop into your repo.
+
+---
+
+# 📄 ONE-PAGE `README.md` (for `values.yaml`)
+
+````md
+# values.yaml – Configuration Reference
+
+This file defines all application-specific configuration for deploying a Spring Boot application using the shared Helm chart on Amazon EKS.
+
+Do **not** modify Helm templates.  
+Update only this file or environment-specific overrides (`values-dev.yaml`, `values-prod.yaml`).
+
+---
+
+## Scaling
+```yaml
+replicaCount: 2
+````
+
+---
+
+## Container Image
+
+```yaml
+image:
+  repository: <ecr-repo>
+  tag: <image-tag>
+  pullPolicy: IfNotPresent
+```
+
+---
+
+## Service Account (IRSA supported)
+
+```yaml
+serviceAccount:
+  create: true
+  name: ""
+  annotations: {}
+```
+
+---
+
+## Service & Port
+
+```yaml
+service:
+  type: ClusterIP
+  port: 8080
+
+containerPort: 8080
+```
+
+---
+
+## Environment Variables
+
+```yaml
+env:
+  SPRING_PROFILES_ACTIVE: dev
+```
+
+---
+
+## Application Config (ConfigMap → /config)
+
+```yaml
+config:
+  enabled: true
+  data:
+    application.yaml: |
+      server:
+        port: 8080
+```
+
+---
+
+## Secrets (Optional)
+
+```yaml
+secret:
+  enabled: false
+  data: {}
+```
+
+---
+
+## Health Probes (Spring Boot Actuator)
+
+```yaml
+livenessProbe:
+  path: /actuator/health/liveness
+  initialDelaySeconds: 60
+
+readinessProbe:
+  path: /actuator/health/readiness
+  initialDelaySeconds: 30
+```
+
+---
+
+## Resources
+
+```yaml
+resources:
+  requests:
+    cpu: "250m"
+    memory: "512Mi"
+  limits:
+    cpu: "500m"
+    memory: "1Gi"
+```
+
+---
+
+## Autoscaling (HPA)
+
+```yaml
+autoscaling:
+  enabled: false
+  minReplicas: 2
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 70
+```
+
+---
+
+## Ingress
+
+```yaml
+ingress:
+  enabled: false
+  className: alb
+  hosts:
+    - host: app.example.com
+      paths:
+        - path: /
+          pathType: Prefix
+```
+
+---
+
+## Scheduling
+
+```yaml
+nodeSelector: {}
+tolerations: []
+affinity: {}
+```
+
+---
+
+## Deploy
+
+```bash
+helm install my-app springboot-helm -f values-prod.yaml
+```
+
+````
+
+---
+
+# 🧾 `values.yaml` (INLINE COMMENTED VERSION)
+
+```yaml
+# Number of pod replicas
+replicaCount: 2
+
+# Container image details
+image:
+  repository: 123456789012.dkr.ecr.us-east-1.amazonaws.com/my-app
+  tag: "1.0.0"
+  pullPolicy: IfNotPresent
+
+# Image pull secrets (optional)
+imagePullSecrets: []
+
+# Override chart name if required
+nameOverride: ""
+fullnameOverride: ""
+
+# ServiceAccount configuration (supports IRSA)
+serviceAccount:
+  create: true
+  name: ""
+  annotations: {}
+  # eks.amazonaws.com/role-arn: arn:aws:iam::<acct-id>:role/<role-name>
+
+# Pod-level annotations (e.g., Prometheus)
+podAnnotations: {}
+
+# Custom pod labels
+podLabels: {}
+
+# Kubernetes Service configuration
+service:
+  type: ClusterIP
+  port: 8080
+
+# Application container port
+containerPort: 8080
+
+# Environment variables for Spring Boot
+env:
+  SPRING_PROFILES_ACTIVE: dev
+
+# Application configuration via ConfigMap
+# Mounted at /config (Spring Boot auto-loads)
+config:
+  enabled: true
+  data:
+    application.yaml: |
+      server:
+        port: 8080
+
+# Kubernetes Secret (optional)
+secret:
+  enabled: false
+  data: {}
+  # DB_USERNAME: user
+  # DB_PASSWORD: password
+
+# Liveness probe (Spring Boot actuator)
+livenessProbe:
+  path: /actuator/health/liveness
+  initialDelaySeconds: 60
+  periodSeconds: 10
+
+# Readiness probe
+readinessProbe:
+  path: /actuator/health/readiness
+  initialDelaySeconds: 30
+  periodSeconds: 10
+
+# Resource requests and limits
+resources:
+  requests:
+    cpu: "250m"
+    memory: "512Mi"
+  limits:
+    cpu: "500m"
+    memory: "1Gi"
+
+# Horizontal Pod Autoscaler
+autoscaling:
+  enabled: false
+  minReplicas: 2
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 70
+
+# Ingress configuration (ALB / NGINX)
+ingress:
+  enabled: false
+  className: alb
+  annotations: {}
+  hosts:
+    - host: app.example.com
+      paths:
+        - path: /
+          pathType: Prefix
+  tls: []
+
+# Node scheduling controls
+nodeSelector: {}
+tolerations: []
+affinity: {}
+````
+
+---
+
+## ✅ Result
+
+* 📄 **One-page README** → perfect for developers
+* 🧾 **Self-documented `values.yaml`** → zero guesswork
+* 🧱 Safe, reusable, enterprise-standard Helm setup
+
+If you want next:
+
+* ultra-minimal **developer-only values.yaml**
+* **prod-hardened** values-prod.yaml
+* **GitOps-ready** notes (Argo CD)
+
+Just say 👍
